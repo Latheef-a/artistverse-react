@@ -8,7 +8,7 @@ function ArtistCard({ artist, onClick }) {
         <h3>{artist.name}</h3>
         <p>{artist.category}</p>
       </div>
-    </div>
+    </div>  
   );
 }
 

@@ -8,10 +8,12 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("All");
   const [favorites, setFavorites] = useState([]);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   const filteredArtists = artistsData.filter((artist) => {
     const matchName =
-      artist.name.toLowerCase().includes(searchTerm.toLowerCase());
+      artist.name &&
+      artist.name.toLowerCase().includes(searchTerm.trim().toLowerCase());
     const matchCategory =
       category === "All" || artist.category === category;
 
@@ -32,15 +34,20 @@ function App() {
       <header className="app-header">
         <div className="header-top">
           <div className="title-section">
-            <h1 className="app-title">Creativa</h1>
+            <h1 className="app-title">✨Creativa</h1>
             <p className="app-subtitle">Discover creative minds</p>
           </div>
 
-          <button className="favorites-header">
-            ❤️ Favorites ({favorites.length})
-          </button>
+         <button
+          className="favorites-header"
+          onClick={() => setShowFavorites(!showFavorites)}
+           >
+            {showFavorites
+              ? "← Back"
+              : `❤️ Favorites (${favorites.length})`}
+        </button>
         </div>
-
+        
         <div className="header-bottom">
           <input
             type="text"
@@ -54,7 +61,9 @@ function App() {
             {["All", "Sketch", "Music", "Photography", "Director"].map((cat) => (
               <button
                 key={cat}
-                className={`filter-btn ${category === cat ? "active" : ""}`}
+                className={`filter-btn ${
+                  category === cat ? "active" : ""
+                }`}
                 onClick={() => setCategory(cat)}
               >
                 {cat}
@@ -63,17 +72,38 @@ function App() {
           </div>
         </div>
       </header>
+      <div className="hero-section">
+  <h2>Explore Creative Talent 🎨</h2>
+  <p>
+    Discover directors, musicians, photographers and sketch artists in one place.
+  </p>
+</div>
+
+  <h2 className="section-title">Top Creators ⭐</h2>
+            <div className="category-preview">
+  {["🎬 Director", "🎵 Music", "📸 Photography", "✏ Sketch"].map((item) => (
+    <div className="category-card" key={item}>
+      {item}
+    </div>
+  ))}
+</div>
 
       {/* ================= GRID ================= */}
-      <div className="artist-grid">
-        {filteredArtists.map((artist) => (
-          <ArtistCard
-            key={artist.id}
-            artist={artist}
-            onClick={() => setSelectedArtist(artist)}
-          />
-        ))}
-      </div>
+     <div className="artist-grid">
+  {(showFavorites ? favorites : filteredArtists).length > 0 ? (
+    (showFavorites ? favorites : filteredArtists).map((artist) => (
+      <ArtistCard
+        key={artist.id}
+        artist={artist}
+        onClick={() => setSelectedArtist(artist)}
+      />
+    ))
+  ) : (
+    <p className="no-results">
+      {showFavorites ? "No favorites yet ❤️" : "No artists found 😢"}
+    </p>
+  )}
+</div>
 
       {/* ================= MODAL ================= */}
       {selectedArtist && (
@@ -116,5 +146,9 @@ function App() {
     </div>
   );
 }
+
+<footer className="footer">
+  <p>© 2026 Creativa | Built by Latheef</p>
+</footer>
 
 export default App;
